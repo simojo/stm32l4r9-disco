@@ -17,7 +17,7 @@ stdenv.mkDerivation rec {
   dontStrip = true;
   dontPatchELF = true;
 
-  device = "STM32F407VG";
+  device = "STM32L4R9IDISCOVERY";
 
   cmakeFlags = [
     "-DPROJECT_NAME=${pname}"

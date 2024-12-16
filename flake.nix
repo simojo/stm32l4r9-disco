@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/c31898adf5a8ed202ce5bea9f347b1c6871f32d1";
     jlink-pack = {
       url = "github:prtzl/jlink-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -10,7 +10,10 @@
 
   outputs = inputs: inputs.flake-utils.lib.eachDefaultSystem (system:
     let
-      pkgs = inputs.nixpkgs.legacyPackages.${system};
+      pkgs = import inputs.nixpkgs {
+        system = "${system}";
+        config.allowUnfree = true;
+      };
       stdenv = pkgs.stdenv;
       jlink = inputs.jlink-pack.defaultPackage.${system}.overrideAttrs (attrs: {
         meta.license = "";
@@ -51,7 +54,7 @@
 
       devShell = pkgs.mkShellNoCC {
         nativeBuildInputs = (firmware.nativeBuildInputs or [ ]) ++ (firmware.buildInputs or [ ])
-          ++ [ pkgs.clang-tools jlink pkgs.stlink pkgs.dos2unix pkgs.glibc_multi pkgs.clang ];
+          ++ [ pkgs.stm32cubemx pkgs.clang-tools jlink pkgs.stlink pkgs.dos2unix pkgs.glibc_multi pkgs.clang ];
       };
     });
 }
